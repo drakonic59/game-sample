@@ -9,6 +9,7 @@ import java.util.Random;
 
 import fr.hattane.ilias.games.sample.isometric2d.config.Colors;
 import fr.hattane.ilias.games.sample.isometric2d.game.map.Tile;
+import fr.hattane.ilias.games.sample.isometric2d.game.map.objects.natural.TreeObject;
 import fr.hattane.ilias.games.sample.isometric2d.utils.IsoMath;
 import fr.hattane.ilias.games.sample.isometric2d.utils.PerlinUtils;
 import fr.hattane.ilias.games.sample.isometric2d.utils.PerlinUtils.Result;
@@ -30,6 +31,7 @@ public class GameMap {
     private double scale = 1.0;
 	
 	private Tile[][] tiles;
+	private Point selectedTile;
 	
 	public GameMap(int width, int height) {
 		
@@ -57,11 +59,17 @@ public class GameMap {
 				
 				tiles[y][x].setGroundColor(result.colors[y][x]);
 				tiles[y][x].setH(result.heights[y][x]);
+				if (result.objects[y][x] != PerlinUtils.ObjectType.NONE)
+					tiles[y][x].setObject(new TreeObject());
 				
 			}
 		}
 		
 		while (!decreaseHeights()) {}
+
+		for (int y = 0; y < SIZE; y++)
+			for (int x = 0; x < SIZE; x++)
+				tiles[y][x].setH(tiles[y][x].getH()+1);
 		
 	}
 	
@@ -76,7 +84,7 @@ public class GameMap {
 				if (tiles[y][x].getH() == 0)
 					hasHeight0 = true;
 				
-				if (Colors.isWater(tiles[y][x].getGroundColor()) && tiles[y][x].getH() != 0)
+				if (Colors.isWater(tiles[y][x].getGroundColor()) && tiles[y][x].getH() > 0)
 					allWater0 = false;
 				
 			}
@@ -150,12 +158,19 @@ public class GameMap {
 	    	        tiles[t[1]][t[0]].getH()
 	    	    );
         	
-            if (t[0] >= 0 && t[1] >= 0 && t[0] < SIZE && t[1] < SIZE)
-            	tile = new Point(t[0], t[1]);
+            if (t[0] >= 0 && t[1] >= 0 && t[0] < SIZE && t[1] < SIZE) {
+            	
+            	Point p = new Point(t[0], t[1]);
+            	tile = new Point(p);
+            	selectedTile = p;
+            	
+            } else
+            	selectedTile = null;
             
         }
 
         drawTiles(g2d, 0, SIZE-1, 0, SIZE-1, tile, scaledOriginX);
+        drawObjects(g2d, 0, SIZE-1, 0, SIZE-1, tile, scaledOriginX);
 //        drawTiles(g2d, txMin, txMax, tyMin, tyMax, tile, scaledOriginX);
 		
 	}
@@ -181,6 +196,26 @@ public class GameMap {
             			g2d, 
             			IsoMath.tileToScreen(tx, ty, scaledOriginX, originY, camX, camY, Tile.TILE_WIDTH, Tile.TILE_HEIGHT, 0),
             			(mouse != null && mouse.x == tx && mouse.y == ty)
+            	);
+            	
+            }
+            
+        }
+		
+	}
+
+	public void drawObjects(Graphics2D g2d, int txMin, int txMax, int tyMin, int tyMax, Point mouse, int scaledOriginX) {
+		
+		for (int sum = txMin + tyMin; sum <= txMax + tyMax; sum++) {
+        	
+            int xStart = Math.max(txMin, sum - tyMax);
+            int xEnd   = Math.min(txMax, sum - tyMin);
+            for (int tx = xStart; tx <= xEnd; tx++) {
+            	
+            	int ty = sum - tx;
+            	tiles[ty][tx].drawObjects(
+            			g2d, 
+            			IsoMath.tileToScreen(tx, ty, scaledOriginX, originY, camX, camY, Tile.TILE_WIDTH, Tile.TILE_HEIGHT, 0)
             	);
             	
             }
@@ -313,6 +348,14 @@ public class GameMap {
 
 	public void setScale(double scale) {
 		this.scale = scale;
+	}
+
+	public Point getSelectedTile() {
+		return selectedTile;
+	}
+
+	public void setSelectedTile(Point selectedTile) {
+		this.selectedTile = selectedTile;
 	}
 	
 }

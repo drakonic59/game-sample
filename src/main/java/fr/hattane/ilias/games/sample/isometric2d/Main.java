@@ -1,5 +1,10 @@
 package fr.hattane.ilias.games.sample.isometric2d;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +20,9 @@ import fr.hattane.ilias.games.sample.isometric2d.utils.Parameters;
 public class Main  {
 
 	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		
+	
+	public static File MAIN_FOLDER;
+	
 	public static List<GameSave> saves;
 	public static GameSave current;
 	
@@ -31,7 +38,7 @@ public class Main  {
 	
 	public static Parameters<Settings> parameters;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		initSettings();
 		loadSaves();
@@ -52,9 +59,27 @@ public class Main  {
 		
 	}
 
-	private static void loadSaves() {
+	private static void loadSaves() throws IOException {
 		
 		saves = new ArrayList<>();
+		
+		String appData = System.getenv("APPDATA");
+        if (appData == null)
+            appData = "./game";
+
+        File main = new File(appData);
+        if (!main.exists())
+        	main.mkdirs();
+                
+       	Path game = Paths.get(appData, ".game");
+        Files.createDirectories(game);
+		
+        MAIN_FOLDER = game.toFile();
+        
+		if (MAIN_FOLDER.listFiles().length == 0) {
+			System.out.println("Existe vide");
+		} else
+			System.out.println("existe plein");
 		
 	}
 	

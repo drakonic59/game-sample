@@ -70,7 +70,7 @@ public class MenuPanel extends Panel implements Runnable {
     
     public MenuPanel(GameFrame frame, int width, int height, boolean menu, Function close) {
     	
-    	this.close = close;
+    	this.close = close; 
 		init(frame, width, height, menu);
     	
     }
@@ -143,10 +143,10 @@ public class MenuPanel extends Panel implements Runnable {
 			components.add(new ButtonImageComponent(btnX, startY, buttonWidth, buttonHeight, Images.MENU_BUTTON_SAVE, Images.MENU_BUTTON_SAVE_HOVER, Images.MENU_BUTTON_SAVE_CLICKED, new Function() {
 				@Override
 				public Object execute(Object object) {
+					newGame = false;
 					loadGame = false;
 					setLoadGameMenuVisibility(false);
-					newGame = !newGame;
-					setNewGameMenuVisibility(newGame);
+					setNewGameMenuVisibility(false);
 					return null;
 				}
 			}));
@@ -177,6 +177,15 @@ public class MenuPanel extends Panel implements Runnable {
 			components.add(new ButtonImageComponent(btnX, startY + buttonHeight*3 + 60, buttonWidth, buttonHeight, Images.MENU_BUTTON_EDITOR, Images.MENU_BUTTON_EDITOR_HOVER, Images.MENU_BUTTON_EDITOR_CLICKED, new Function() {
 				@Override
 				public Object execute(Object object) {
+					
+					GameSave game = new GameSave(
+							"Editor-1",
+							Difficulties.EASY,
+							Characters.MAN
+					);
+					
+					Main.saves.add(game);
+					Main.current = game;
 					
 					alive = false;
 					frame.switchToEditor();

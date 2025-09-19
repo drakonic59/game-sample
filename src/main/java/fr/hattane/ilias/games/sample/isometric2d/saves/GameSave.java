@@ -14,6 +14,11 @@ import fr.hattane.ilias.games.sample.isometric2d.saves.config.Difficulties;
 
 public class GameSave {
 	
+	public static final long SECOND = 1000;
+	public static final long MINUTE = SECOND*60;
+	public static final long HOUR = MINUTE*60;
+	
+	private Date creationDate;
 	private Date saveDate;
 	
 	private String name;
@@ -32,10 +37,30 @@ public class GameSave {
 	
 	public GameSave(String name, Difficulties difficulty, Characters character) {
 		super();
-		this.saveDate = new Date();
+		this.creationDate = new Date();
+		this.saveDate = creationDate;
 		this.name = name;
 		this.difficulty = difficulty;
 		this.character = character;
+	}
+
+	public String getGameTime() {
+		
+		long time = saveDate.getTime() - creationDate.getTime();
+		
+		if (time > 0) {
+			long hourCount = time / HOUR;
+			
+			time -= hourCount*HOUR;
+			long minuteCount = time / MINUTE;
+			
+			time -= minuteCount*MINUTE;
+			long secondCount = time / SECOND;
+			
+			return hourCount + "h " + minuteCount + "m " + secondCount + "s";
+		}
+		
+		return "0h 0m 0s";
 	}
 	
 	public boolean load(File file) {
@@ -116,6 +141,14 @@ public class GameSave {
 
 	public void setSaveDate(Date saveDate) {
 		this.saveDate = saveDate;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 	
 }

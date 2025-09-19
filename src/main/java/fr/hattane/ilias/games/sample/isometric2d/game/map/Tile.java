@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 
 import fr.hattane.ilias.games.sample.isometric2d.Main;
+import fr.hattane.ilias.games.sample.isometric2d.game.map.objects.MapObject;
 
 public class Tile {
 	
@@ -19,6 +20,8 @@ public class Tile {
 	private int h;
 	
 	private Color groundColor;
+	
+	private MapObject object;
 	
 	public Tile() {}
 
@@ -135,10 +138,8 @@ public class Tile {
 	        );
 	        
 	        g2d.setColor(getGroundColor().darker());
-//	        g2d.setColor(getGroundColor().brighter());
 	        g2d.fill(left);
 	        
-//	        g2d.setColor(getGroundColor().darker());
 	        g2d.setColor(getGroundColor().brighter());
 	        g2d.fill(right);
 	        
@@ -154,6 +155,21 @@ public class Tile {
 	        g2d.draw(ground);
         }
 		
+	}
+	
+	public void drawObjects(Graphics2D g2d, Point tileToScreenPoint) {
+		
+		if (object != null)
+			object.draw(g2d, tileToScreenPoint, getH());
+		
+	}
+
+	public MapObject getObject() {
+		return object;
+	}
+
+	public void setObject(MapObject object) {
+		this.object = object;
 	}
 	
 }

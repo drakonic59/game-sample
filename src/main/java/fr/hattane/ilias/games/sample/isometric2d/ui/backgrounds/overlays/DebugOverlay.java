@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.hattane.ilias.games.sample.isometric2d.Main;
 import fr.hattane.ilias.games.sample.isometric2d.ui.components.UiComponent;
 
 public class DebugOverlay extends UiComponent {
@@ -33,6 +34,8 @@ public class DebugOverlay extends UiComponent {
 	private Map<Point, String> lines = new HashMap<>();
 	private List<String> texts = new ArrayList<>();
 	
+	private double scale = 1.0;
+	
 	public DebugOverlay(int width, int height) {
 		super(0, 0, width, height);
 		
@@ -48,6 +51,23 @@ public class DebugOverlay extends UiComponent {
 		
 		updateScale(1.0);
 
+	}
+	
+	public void updateLinesContent(double speed, double scale, int mapWidth, int mapHeight, int entityCount, int mouseX, int mouseY, Point tile, Color color) {
+		
+		texts.clear();
+		
+		addLine("Sauvegarde : " + Main.current.getName() + " - " 
+								+ Main.current.getDifficulty().getLabel() + " - " 
+								+ Main.FORMATTER.format(Main.current.getSaveDate()));
+		addLine("Temps de jeu (sauvegardé) : " + Main.current.getGameTime());
+		addLine("Vitesse : " + speed + "      | Zoom : " + scale);
+		addLine("Carte : " + mapWidth + "x" + mapHeight + "   | Entités : " + entityCount);
+		addLine("Pointeur : x=" + mouseX + " y=" + mouseY);
+		addLine("Case : " + (tile != null ? "x=" + tile.x + " y=" + tile.y : "Hors de la Carte") + "    | Couleur : " + (color != null ? color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ", " + color.getAlpha() : "Vide"));
+		
+		updateScale(scale);
+		
 	}
 	
 	public void updateScale(double scale) {
@@ -197,6 +217,14 @@ public class DebugOverlay extends UiComponent {
 
 	public void setOriginHeight(int originHeight) {
 		this.originHeight = originHeight;
+	}
+
+	public double getScale() {
+		return scale;
+	}
+
+	public void setScale(double scale) {
+		this.scale = scale;
 	}
 
 }

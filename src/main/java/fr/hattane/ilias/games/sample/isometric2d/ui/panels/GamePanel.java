@@ -1,6 +1,7 @@
 package fr.hattane.ilias.games.sample.isometric2d.ui.panels;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -359,6 +360,23 @@ public class GamePanel extends Panel implements Runnable {
 		else {
 			
 			map.update();
+			
+			if (Main.debug) {
+				
+				Point p = getMousePosition();
+				debug.updateLinesContent(
+						1.0, 
+						map.getScale(),
+						GameMap.SIZE, 
+						GameMap.SIZE, 
+						0, 
+						(p != null ? p.x : -1), 
+						(p != null ? p.y : -1), 
+						map.getSelectedTile(), 
+						map.getTiles()[map.getSelectedTile().y][map.getSelectedTile().x].getGroundColor()
+				);
+				
+			}
 			
 		}
 	}
